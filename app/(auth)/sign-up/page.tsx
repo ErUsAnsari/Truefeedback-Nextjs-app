@@ -92,7 +92,7 @@ function page() {
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Welcome to True Feedback
           </h1>
-          <p className="mb-4">Sign in to continue your secret conversations</p>
+          <p className="mb-4">Sign up to continue your secret conversations</p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
