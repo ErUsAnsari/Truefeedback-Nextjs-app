@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
-function page() {
+function SignUpForm() {
   const [username, setUsername] = useState("");
   const [usernameMessage, setUsernameMessage] = useState("");
   const [isCheckingUsername, setIsCheckingUsername] = useState(false);
@@ -46,10 +46,10 @@ function page() {
     const checkUsernameUniqueness = async () => {
       if (username) {
         setIsCheckingUsername(true);
-        setUsernameMessage("");
+        setUsernameMessage(""); // Reset Message
 
         try {
-          const response = await axios.get(
+          const response = await axios.get<ApiResponse>(
             `/api/check-username-unique?username=${username}`,
           );
           //   console.log(response.data.message);
@@ -76,9 +76,13 @@ function page() {
       toast.success(response.data.message);
       router.replace(`/verify/${username}`);
     } catch (error) {
-      console.error("Error in signup of user", error);
+      console.error("Error during sign-up", error);
       const axiosError = error as AxiosError<ApiResponse>;
+
+      // Default Error Message
       let errorMessage = axiosError.response?.data.message;
+      console.error("There was a problem with your sign-up. Please try again.");
+
       toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
@@ -113,15 +117,17 @@ function page() {
                     />
                   </FormControl>
                   {isCheckingUsername && <Loader2 className="animate-spin" />}
-                  <p
-                    className={`text-sm ${
-                      usernameMessage === "Username is unique"
-                        ? "text-red-500"
-                        : "text-green-500"
-                    }`}
-                  >
-                    {usernameMessage}
-                  </p>
+                  {!isCheckingUsername && usernameMessage && (
+                    <p
+                      className={`text-sm ${
+                        usernameMessage === "Username is unique"
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {usernameMessage}
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -135,6 +141,9 @@ function page() {
                   <FormControl>
                     <Input placeholder="email" {...field} />
                   </FormControl>
+                  <p className="text-gray-400 text-sm">
+                    We will send you a verification code
+                  </p>
                   <FormMessage />
                 </FormItem>
               )}
@@ -177,4 +186,4 @@ function page() {
   );
 }
 
-export default page;
+export default SignUpForm;

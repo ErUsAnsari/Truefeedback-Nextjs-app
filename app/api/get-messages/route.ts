@@ -11,7 +11,7 @@ export async function GET(request: Request) {
 
   // Get the user session
   const session = await getServerSession(authOptions);
-  const user = session?.user;
+  const user: User = session?.user;
 
   // Check if the user is authenticated
   if (!session || !user) {

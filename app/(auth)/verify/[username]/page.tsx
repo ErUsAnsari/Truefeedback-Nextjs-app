@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -38,12 +38,12 @@ function VerifyAccount() {
 
       toast.success(response.data.message);
 
-      router.replace("sign-in");
+      router.replace("/sign-in");
     } catch (error) {
-      console.error("Error in signup of user", error);
       const axiosError = error as AxiosError<ApiResponse>;
+      console.error("Error in signup of user", error);
       let errorMessage = axiosError.response?.data.message;
-      toast.error(errorMessage);
+      toast.error(errorMessage ?? "An error occurred. Please try again.");
     }
   };
   return (
