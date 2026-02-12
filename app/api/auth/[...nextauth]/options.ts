@@ -17,10 +17,11 @@ export const authOptions: NextAuthOptions = {
         await dbConnect();
         try {
           const user = await UserModel.findOne({
-            $or: [
-              { email: credentials.identifier },
-              { username: credentials.identifier },
-            ],
+            email: credentials.email,
+            // $or: [
+            //   { email: credentials.identifier },
+            //   { username: credentials.identifier },
+            // ],
           });
 
           if (!user) {
@@ -51,8 +52,9 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token._id = user._id?.toString();
         token.isVerified = user.isVerified;
-        token.isAcceptinfMessages = user.isAcceptingMessages;
+        token.isAcceptingMessages = user.isAcceptingMessages;
         token.username = user.username;
+        token.email = user.email;
       }
       return token;
     },
@@ -62,6 +64,7 @@ export const authOptions: NextAuthOptions = {
         session.user.isVerified = token.isVerified;
         session.user.isAcceptingMessages = token.isAcceptingMessages;
         session.user.username = token.username;
+        session.user.email = token.email;
       }
       return session;
     },

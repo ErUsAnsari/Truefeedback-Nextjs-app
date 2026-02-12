@@ -73,8 +73,13 @@ function SignUpForm() {
 
     try {
       const response = await axios.post<ApiResponse>("/api/sign-up", data);
+
+      if (response.data.success) {
+        router.push(`/verify?email=${encodeURIComponent(data.email)}`);
+      }
       toast.success(response.data.message);
-      router.replace(`/verify/${username}`);
+      // router.replace(`/verify/${username}`);
+      console.log(data);
     } catch (error) {
       console.error("Error during sign-up", error);
       const axiosError = error as AxiosError<ApiResponse>;

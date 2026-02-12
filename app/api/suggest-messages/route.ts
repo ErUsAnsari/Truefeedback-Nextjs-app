@@ -1,8 +1,5 @@
-import { NextResponse } from "next/server";
-import { streamText, UIMessage, convertToModelMessages } from "ai";
+import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-
-export const runtime = "edge";
 
 export async function POST(req: Request) {
   try {

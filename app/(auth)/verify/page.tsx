@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -22,7 +22,9 @@ import { Button } from "@/components/ui/button";
 
 function VerifyAccount() {
   const router = useRouter();
-  const params = useParams<{ username: string }>();
+  // const params = useParams<{ email: string }>();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
   // zod implementation
   const form = useForm<z.infer<typeof verifySchema>>({
@@ -32,7 +34,7 @@ function VerifyAccount() {
   const onSubmit = async (data: z.infer<typeof verifySchema>) => {
     try {
       const response = await axios.post(`/api/verify-code`, {
-        username: params.username,
+        email,
         code: data.code,
       });
 
