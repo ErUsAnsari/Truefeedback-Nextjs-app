@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import z from "zod";
+import { z } from "zod";
 import { usernameValidation } from "@/schemas/signUpSchema";
 
 const UsernameQuerySchema = z.object({
@@ -12,19 +12,29 @@ export async function GET(request: Request) {
 
   try {
     const { searchParams } = new URL(request.url);
-    const queryParam = { username: searchParams.get("username") };
+    const queryParams = { username: searchParams.get("username") };
 
     // validate with zod
-    const result = UsernameQuerySchema.safeParse(queryParam);
+    const result = UsernameQuerySchema.safeParse(queryParams);
     if (!result.success) {
-      const usernameErrors = result.error.format().username?._errors || [];
+      // const formatted = z.treeifyError(result.error)
+      // const usernameErrors = formatted.properties?.username?.errors ?? []
+      // return Response.json(
+      //   {
+      //     success: false,
+      //     message:
+      //       usernameErrors?.length > 0
+      //         ? usernameErrors.join(", ")
+      //         : "Invalid Query Parameters",
+      //   },
+      //   { status: 400 },
+      // );
+
       return Response.json(
         {
           success: false,
           message:
-            usernameErrors?.length > 0
-              ? usernameErrors.join(", ")
-              : "Invalid Query Parameters",
+            result.error.issues[0]?.message ?? "Invalid Query Parameters",
         },
         { status: 400 },
       );
@@ -50,12 +60,12 @@ export async function GET(request: Request) {
     return Response.json(
       {
         success: true,
-        message: "Username is available",
+        message: "Username is unique",
       },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error Checking username");
+    console.error("Error Checking username", error);
     return Response.json(
       {
         success: false,

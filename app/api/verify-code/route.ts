@@ -5,11 +5,21 @@ export async function POST(request: Request) {
   await dbConnect();
 
   try {
-    const { username, code } = await request.json();
+    const { email, code } = await request.json();
+    console.log("BODY : ", { email, code });
 
-    const decodedUsername = decodeURIComponent(username);
+    if (!email || !code) {
+      return Response.json(
+        { success: false, message: "Missing fields" },
+        { status: 400 },
+      );
+    }
 
-    const user = await UserModel.findOne({ username: decodedUsername });
+    // const decodedUsername = decodeURIComponent(username);
+
+    // const user = await UserModel.findOne({ username: decodedUsername });
+    const user = await UserModel.findOne({ email });
+    console.log("USER : ", user);
 
     if (!user) {
       return Response.json(
@@ -17,7 +27,14 @@ export async function POST(request: Request) {
           success: false,
           message: "User not found",
         },
-        { status: 500 },
+        { status: 404 },
+      );
+    }
+
+    if (!user.verifyCode || !user.verifyCodeExpiry) {
+      return Response.json(
+        { success: false, message: "Verification data missing" },
+        { status: 400 },
       );
     }
 
@@ -32,7 +49,7 @@ export async function POST(request: Request) {
 
       return Response.json(
         {
-          success: false,
+          success: true,
           message: "Account verified successfully",
         },
         { status: 200 },

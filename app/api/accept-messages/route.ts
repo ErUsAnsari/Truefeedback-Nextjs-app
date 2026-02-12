@@ -5,6 +5,7 @@ import dbConnect from "@/lib/dbConnect";
 import { User } from "next-auth";
 
 export async function POST(request: Request) {
+  // Connect to Database
   await dbConnect();
 
   const session = await getServerSession(authOptions);
@@ -32,7 +33,10 @@ export async function POST(request: Request) {
     if (!updatedUser) {
       // User not found
       return Response.json(
-        { success: false, message: "Error updating message acceptance status" },
+        {
+          success: false,
+          message: "Unable to find user to update message acceptance status",
+        },
         { status: 404 },
       );
     }
