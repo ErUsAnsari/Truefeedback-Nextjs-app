@@ -10,18 +10,17 @@ export const authOptions: NextAuthOptions = {
       id: "credentials",
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        identifier: { label: "Email or Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials: any): Promise<any> {
         await dbConnect();
         try {
-          const user = await UserModel.findOne({
-            email: credentials.email,
-            // $or: [
-            //   { email: credentials.identifier },
-            //   { username: credentials.identifier },
-            // ],
+          const user = await UserModel.findOne({ 
+            $or: [
+              { email: credentials.identifier },
+              { username: credentials.identifier },
+            ],
           });
 
           if (!user) {
